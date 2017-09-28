@@ -1,13 +1,15 @@
 # LocationService
  1) Start Service  Setter 
   *** !!! Contexxt !!! ***
-                 @Override
-                  protected void onStart() {
-                      super.onStart();
-                      LocationService.setContext(this);
-                      startService(new Intent(getApplicationContext(), LocationService.class));
+  
+  
+                   @Override
+                    protected void onStart() {
+                        super.onStart();
+                        LocationService.setContext(this);
+                        startService(new Intent(getApplicationContext(), LocationService.class));
 
-                  }
+                    }
                   *************************************************
   2) Example 
   
