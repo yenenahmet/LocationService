@@ -2,7 +2,18 @@
                                             <service
                                             android:name="com.example.servicelocation.LocationService"
                                             android:exported="true" />
-                                            
+                                            *******
+                                            Gradle Project
+                                            *******
+                                            allprojects {
+                                                  repositories {
+                                                      jcenter()
+                                                      maven { url 'https://jitpack.io' }
+                                                  }
+                                              }
+                                           ******** 
+                                           Gradle Module
+                                           ********
                                            compile 'com.github.yenenahmet:LocationService:0.1.0'  
                            *********************************
 
