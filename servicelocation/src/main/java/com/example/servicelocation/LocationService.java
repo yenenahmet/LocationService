@@ -23,7 +23,6 @@ import android.widget.Toast;
  */
 
 public class LocationService extends Service {
-
     /*************************************************/
     private static final String TAG = "LocationService";
     private static Location locationGPS;
@@ -33,13 +32,13 @@ public class LocationService extends Service {
     private WifiManager wifi;
     private static GPS gpss;
     private static Network network;
+    /*** Default Variable ***/
     /********************[  Cons Start Command  invariable  ]*************************/
     private static long TimeLoc = 1000 * 6;// 1 minutes
     private static int ServiceSticky = Service.START_STICKY;
     private static float Distance = 0;
     //******************************************************************//
     private static boolean WifiStatus =true,isGPS = true,isNetwork = true,isOpenSettingActivity =true;
-    private static Context context; // default NULL !!
     private static String ToastSettingMessage ="Please turn on Location";
     /**********************[ SETTER ]***********************/
     @Nullable
@@ -51,15 +50,15 @@ public class LocationService extends Service {
     public void onCreate() {
         super.onCreate();
          wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        if(isGPS){
-           gpss = new GPS();
-        }
-        if(isNetwork){
-            network = new Network();
-        }
+            if(isGPS){
+               gpss = new GPS();
+            }
+            if(isNetwork){
+                network = new Network();
+            }
     }
     private class GPS implements  LocationListener{
-            public GPS(){
+        public GPS(){
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
@@ -89,10 +88,8 @@ public class LocationService extends Service {
             if(!isNetwork){
                 if(isOpenSettingActivity) {
                     try {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        Toast.makeText(context,ToastSettingMessage,Toast.LENGTH_LONG).show();
+                        LocationServiceUtil.OpenLocationSettingsIntent(LocationService.this);
+                        Toast.makeText(LocationService.this,ToastSettingMessage,Toast.LENGTH_LONG).show();
                     } catch (Exception ex) {
                         Log.e(TAG + "[SET_ER]", ex.toString());
                     }
@@ -140,10 +137,8 @@ public class LocationService extends Service {
         public void onProviderDisabled(String provider) {
             if(isOpenSettingActivity){
                 try{
-                    Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    Toast.makeText(context,ToastSettingMessage,Toast.LENGTH_LONG).show();
+                    LocationServiceUtil.OpenLocationSettingsIntent(LocationService.this);
+                    Toast.makeText(LocationService.this,ToastSettingMessage,Toast.LENGTH_LONG).show();
                 }catch (Exception ex){
                     Log.e(TAG+"[SET]",ex.toString());
                 }
@@ -183,6 +178,13 @@ public class LocationService extends Service {
         }
         return 0;
     }
+    public static double getAltitude(){
+        Location location = getLocation();
+        if(location != null){
+            return location.getAltitude();
+        }
+        return 0;
+    }
     //*************************************************//
     //              Get Location                       //
     //*************************************************//
@@ -192,11 +194,10 @@ public class LocationService extends Service {
                 //***********************//
                 // Start Setter     Invariable     //
                 //**********************//
-    public static void setInvariableCommand(long Time,int serviceSticky,float distance,@NonNull Context context1){
+    public static void setInvariableCommand(long Time,int serviceSticky,float distance){
         TimeLoc = Time;
         ServiceSticky = serviceSticky;
         Distance = distance;
-        context =context1;
     }
                 //***********************//
                 // Start Setter      Invariable    //
@@ -220,7 +221,6 @@ public class LocationService extends Service {
         isNetwork =Network;
     }
     public static void setIsOpenSettingActivity(boolean OpenSettingActivity){ isOpenSettingActivity = OpenSettingActivity;}
-    public static void setContext(@NonNull Context contextt){context =contextt;}
     public static void setToastSettingMessage(String text){
         ToastSettingMessage =text;
     }
