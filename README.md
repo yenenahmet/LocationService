@@ -2,6 +2,9 @@
                                             <service
                                             android:name="com.example.servicelocation.LocationService"
                                             android:exported="true" />
+                                            
+                                           compile 'com.github.yenenahmet:LocationService:0.1.0'  
+                           *********************************
 
 # LocationService
  1) Start Service  Setter 
