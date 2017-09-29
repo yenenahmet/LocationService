@@ -1,4 +1,4 @@
-                                 Manifet ADD
+                                 Manifest ADD
                                             <service
                                             android:name="com.example.servicelocation.LocationService"
                                             android:exported="true" />
