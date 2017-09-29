@@ -1,7 +1,7 @@
-Manifet ADD
-           <service
-           android:name="com.example.servicelocation.LocationService"
-           android:exported="true" />
+                                 Manifet ADD
+                                            <service
+                                            android:name="com.example.servicelocation.LocationService"
+                                            android:exported="true" />
 
 # LocationService
  1) Start Service  Setter 
