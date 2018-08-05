@@ -72,7 +72,6 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             locationGPS = location;
-            Log.e(TAG,"Location GPS: " +String.valueOf(location.getLatitude()) +","+String.valueOf(location.getLongitude()));
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -110,8 +109,7 @@ public class LocationService extends Service {
             }
         }
         @Override
-        public void onLocationChanged(Location location) {
-            Log.e(TAG,"Location Network:" +String.valueOf(location.getLatitude()) +"," +String.valueOf(location.getLongitude()));
+        public void onLocationChanged(Location location) {     
             locationNETWROK = location;
             if(WifiStatus){
                 if(!wifi.isWifiEnabled()){
