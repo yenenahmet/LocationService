@@ -33,7 +33,7 @@ public class LocationService extends Service {
     private WifiManager wifi;
     private static GPS gpss;
     private static Network network;
-    private LocationChangedListener locationChangedListener;
+    private static ListenerLocation listenerLocation ;
     /*** Default Variable ***/
     /********************[  Cons Start Command  invariable  ]*************************/
     private static long TimeLoc = 1000 * 3;// 30 second
@@ -74,7 +74,7 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             locationGPS = location;
-            locationChangedListener.onLocation(location,1);
+            listenerLocation.onLocation(location,1);
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -114,7 +114,7 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             locationNETWROK = location;
-            locationChangedListener.onLocation(location,0);
+            listenerLocation.onLocation(location,0);
             if(WifiStatus){
                 if(!wifi.isWifiEnabled()){
                     wifi.setWifiEnabled(true);
@@ -262,10 +262,9 @@ public class LocationService extends Service {
             wifi.setWifiEnabled(false);
         }
     }
-    public interface LocationChangedListener{
-        void onLocation(Location location,int isGps);
+
+    public static void setListenerLoca(ListenerLocation listenerLoca){
+        listenerLocation = listenerLoca;
     }
-    public void setLocationChangedListener(LocationChangedListener locationChangedListener){
-        this.locationChangedListener = locationChangedListener;
-    }
+
 }
