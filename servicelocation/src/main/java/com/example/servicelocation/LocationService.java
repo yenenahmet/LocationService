@@ -1,5 +1,8 @@
 package com.example.servicelocation;
 
+/**
+ * Created by Ahmet on 05.08.2018.
+ */
 import android.Manifest;
 import android.app.Service;
 import android.content.Context;
@@ -10,9 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -32,9 +33,10 @@ public class LocationService extends Service {
     private WifiManager wifi;
     private static GPS gpss;
     private static Network network;
+    private LocationChangedListener locationChangedListener;
     /*** Default Variable ***/
     /********************[  Cons Start Command  invariable  ]*************************/
-    private static long TimeLoc = 1000 * 6;// 1 minutes
+    private static long TimeLoc = 1000 * 3;// 30 second
     private static int ServiceSticky = Service.START_STICKY;
     private static float Distance = 0;
     //******************************************************************//
@@ -49,29 +51,30 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-         wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-            if(isGPS){
-               gpss = new GPS();
-            }
-            if(isNetwork){
-                network = new Network();
-            }
+        wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        if(isGPS){
+            gpss = new GPS();
+        }
+        if(isNetwork){
+            network = new Network();
+        }
     }
     private class GPS implements  LocationListener{
         public GPS(){
-                if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                locationManagerGPS = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                locationManagerGPS.requestLocationUpdates(LocationManager.GPS_PROVIDER, TimeLoc, Distance,this);
-                Location location =  locationManagerGPS.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if(location != null){
-                    locationGPS = location;
-                }
+            if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
             }
+            locationManagerGPS = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManagerGPS.requestLocationUpdates(LocationManager.GPS_PROVIDER, TimeLoc, Distance,this);
+            Location location =  locationManagerGPS.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location != null){
+                locationGPS = location;
+            }
+        }
         @Override
         public void onLocationChanged(Location location) {
             locationGPS = location;
+            locationChangedListener.onLocation(location,1);
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -109,8 +112,9 @@ public class LocationService extends Service {
             }
         }
         @Override
-        public void onLocationChanged(Location location) {     
+        public void onLocationChanged(Location location) {
             locationNETWROK = location;
+            locationChangedListener.onLocation(location,0);
             if(WifiStatus){
                 if(!wifi.isWifiEnabled()){
                     wifi.setWifiEnabled(true);
@@ -152,15 +156,14 @@ public class LocationService extends Service {
     //              Get Location                       //
     //*************************************************//
     public static Location getLocation(){
-        Location location = null;
         if(locationGPS != null){
-            location = locationGPS;
+           return  locationGPS;
         }else{
             if(locationNETWROK != null){
-                location = locationNETWROK;
+               return  locationNETWROK;
             }
         }
-     return location;
+        return null;
     }
     public static double getLatitude(){
         Location location = getLocation();
@@ -189,17 +192,17 @@ public class LocationService extends Service {
     //**********************************//
     //      Setter                      //
     //**********************************//
-                //***********************//
-                // Start Setter     Invariable     //
-                //**********************//
+    //***********************//
+    // Start Setter     Invariable     //
+    //**********************//
     public static void setInvariableCommand(long Time,int serviceSticky,float distance){
         TimeLoc = Time;
         ServiceSticky = serviceSticky;
         Distance = distance;
     }
-                //***********************//
-                // Start Setter      Invariable    //
-                //**********************//
+    //***********************//
+    // Start Setter      Invariable    //
+    //**********************//
     public static void setTime(long time){
         TimeLoc = time;
     }
@@ -259,5 +262,10 @@ public class LocationService extends Service {
             wifi.setWifiEnabled(false);
         }
     }
-
+    public interface LocationChangedListener{
+        void onLocation(Location location,int isGps);
+    }
+    public void setLocationChangedListener(LocationChangedListener locationChangedListener){
+        this.locationChangedListener = locationChangedListener;
+    }
 }

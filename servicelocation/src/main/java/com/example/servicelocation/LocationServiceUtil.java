@@ -1,13 +1,12 @@
 package com.example.servicelocation;
 
+/**
+ * Created by Ahmet on 05.08.2018.
+ */
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
-import android.net.wifi.WifiManager;
-
-/**
- * Created by Ahmet on 29.09.2017.
- */
 
 public class LocationServiceUtil {
     public static boolean isGPSEnabled(Context context) {
