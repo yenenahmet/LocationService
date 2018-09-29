@@ -33,7 +33,12 @@ public class LocationService extends Service {
     private WifiManager wifi;
     private static GPS gpss;
     private static Network network;
-    private static ListenerLocation listenerLocation ;
+    private static ListenerLocation listenerLocation  = new ListenerLocation() {
+        @Override
+        public void onLocation(Location location, int isGps) {
+
+        }
+    };
     /*** Default Variable ***/
     /********************[  Cons Start Command  invariable  ]*************************/
     private static long TimeLoc = 1000 * 3;// 30 second
